@@ -6,7 +6,7 @@ phases:
       docker: 18
   build:
     commands:
-      - sudo service docker start
+      - service docker start
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
       - echo Starting
       - docker-compose up
