@@ -1,7 +1,7 @@
 version: 0.2
 
 phases:
-  iinstall:
+  install:
     runtime-versions:
       docker: 18
   build:
