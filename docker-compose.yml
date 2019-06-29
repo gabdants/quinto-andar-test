@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  db:
+    networks: 
+      - quintoandar
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "198745"
+      MYSQL_DATABASE: "hello"
+    volumes:
+      - ./create_database.sql:/docker-entrypoint-initdb.d/create_database.sql
+  rabbitmq:
+    networks: 
+      - quintoandar
+    image: rabbitmq:3-management
+    ports: 
+      - "5672:5672"
+      - "15672:15672"
+    depends_on: 
+      - db
+  node:
+      networks: 
+        - quintoandar
+      build: ./hello-node/
+      depends_on:
+        - db
+        - rabbitmq
+      environment:
+        WAIT_HOSTS: db:3306, rabbitmq:5672, rabbitmq:15672
+        WAIT_HOSTS_TIMEOUT: 60
+  py:
+    networks: 
+      - quintoandar
+    build: ./hello-python/
+    ports: 
+      - "8000:8000"
+    depends_on: 
+      - node
+networks:
+  quintoandar:
+      driver: bridge
+  
